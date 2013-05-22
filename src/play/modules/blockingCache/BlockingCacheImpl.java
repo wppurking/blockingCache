@@ -3,6 +3,7 @@ package play.modules.blockingCache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.constructs.blocking.BlockingCache;
 import play.Logger;
 import play.cache.CacheImpl;
 
@@ -19,13 +20,16 @@ public class BlockingCacheImpl implements CacheImpl {
     private static BlockingCacheImpl uniqueInstance;
 
     CacheManager cacheManager;
-    private static final String cacheName = "src/play";
+    private static final String cacheName = "play";
 
     Ehcache cache;
 
     private BlockingCacheImpl() {
         this.cacheManager = CacheManager.create();
         this.cacheManager.addCache(cacheName);
+        Ehcache originalCache = cacheManager.getEhcache(cacheName);
+        cacheManager.replaceCacheWithDecoratedCache(originalCache,
+            new BlockingCache(originalCache));
         this.cache = cacheManager.getEhcache(cacheName);
     }
 
