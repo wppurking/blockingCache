@@ -29,7 +29,7 @@ public class BlockingCacheImpl implements CacheImpl {
         this.cacheManager.addCache(cacheName);
         Ehcache originalCache = cacheManager.getEhcache(cacheName);
         cacheManager.replaceCacheWithDecoratedCache(originalCache,
-            new BlockingCache(originalCache));
+                new BlockingCache(originalCache));
         this.cache = cacheManager.getEhcache(cacheName);
     }
 
@@ -153,5 +153,13 @@ public class BlockingCacheImpl implements CacheImpl {
 
     public void stop() {
         cacheManager.shutdown();
+    }
+
+    public CacheManager cacheManager() {
+        return this.cacheManager;
+    }
+
+    public Ehcache cache() {
+        return this.cache;
     }
 }
